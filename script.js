@@ -434,11 +434,16 @@ render();
     launcher.addEventListener('click',()=>show(panel.hidden));
     document.getElementById('kb-close').addEventListener('click',()=>show(false));
     function updateLegends(){
+      panel.classList.toggle('kb-desktop-mode',!mobileTouchMode());
       for(const {button,key:k} of codeMap.values()){
-        // Like real keycaps, letter legends stay fixed. Caps Lock has NO visible ON/OFF state.
+        // Key legends stay fixed. Only DESKTOP shows the Caps Lock key's LED.
         if(k.upper){button.querySelector('.kb-top').textContent=k.upper;button.querySelector('.kb-bottom').textContent=k.label;}
         else if(/^Key[A-Z]$/.test(k.code))button.textContent=k.label;
         button.classList.toggle('kb-toggled',(k.code==='ShiftLeft'||k.code==='ShiftRight')&&virtualShift);
+        if(k.code==='CapsLock'){
+          button.classList.toggle('kb-caps-on',capsOn);
+          button.setAttribute('aria-pressed',String(capsOn));
+        }
       }
     }
     function flash(code){const item=codeMap.get(code);if(!item)return;
@@ -498,14 +503,15 @@ render();
     document.addEventListener('keydown',e=>{
       if(panel.hidden)return;
       if(e.code==='ShiftLeft'||e.code==='ShiftRight')shiftHeld=true;
-      if(e.code==='CapsLock')capsOn=e.getModifierState?e.getModifierState('CapsLock'):!capsOn;
+      if(e.getModifierState) capsOn=e.getModifierState('CapsLock');
+      else if(e.code==='CapsLock')capsOn=!capsOn;
       if(!isPassword())flash(e.code);
       updateLegends();
       // Important: never preventDefault; physical typing and sign-in keep working.
     },true);
     document.addEventListener('keyup',e=>{if(panel.hidden)return;
       if(e.code==='ShiftLeft'||e.code==='ShiftRight')shiftHeld=false;
-      if(e.code==='CapsLock'&&e.getModifierState)capsOn=e.getModifierState('CapsLock');
+      if(e.getModifierState)capsOn=e.getModifierState('CapsLock');
       codeMap.get(e.code)?.button.classList.remove('kb-active');updateLegends();
     },true);
     head.addEventListener('pointerdown',e=>{
@@ -535,7 +541,7 @@ render();
         panel.style.bottom='auto';
       }
     }
-    window.addEventListener('resize',()=>{prepareTouchInputs();document.body.classList.toggle('kb-mobile-open',!panel.hidden&&mobileTouchMode());if(!panel.hidden)placeInside();});
+    window.addEventListener('resize',()=>{prepareTouchInputs();document.body.classList.toggle('kb-mobile-open',!panel.hidden&&mobileTouchMode());updateLegends();if(!panel.hidden)placeInside();});
     document.addEventListener('ncae:practice-reset',()=>{
       lastEditable=null;shiftHeld=false;virtualShift=false;capsOn=false;
       show(false);updateLegends();
