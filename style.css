@@ -163,7 +163,7 @@
 }
 
 /* Hard Mode is a practice-only optional difficulty setting, not a Microsoft control. */
-.ms-hard-mode-bar{display:flex;align-items:center;justify-content:flex-end;margin:-14px -27px 15px 0;min-height:25px}
+.ms-hard-mode-bar{position:fixed;top:46px;right:24px;z-index:850;display:flex;align-items:center;justify-content:flex-end;min-height:32px}
 .ms-hard-toggle{appearance:none;border:1px solid #bcbfc4;border-radius:4px;background:#fff;color:#3b4249;font-size:11px;line-height:1.2;font-weight:600;min-height:30px;padding:6px 9px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;cursor:pointer}
 .ms-hard-toggle:hover{background:#f3f6f9;border-color:#0067b8}
 .ms-hard-toggle.enabled{background:#eaf4fc;border-color:#0067b8;color:#005a9e}
@@ -173,4 +173,4 @@
 .ms-hard-state{font-size:10px;font-weight:700;letter-spacing:.02em}
 /* Keep hard-mode and password characters concealed on older Edge/IE password controls. */
 #ms-email[type="password"]::-ms-reveal,#ms-password::-ms-reveal{display:none}
-@media(max-width:500px){.ms-hard-mode-bar{margin:-10px -10px 13px 0}.ms-hard-toggle{min-height:34px;font-size:12px}}
+@media(max-width:500px){.ms-hard-mode-bar{top:42px;right:12px}.ms-hard-toggle{min-height:34px;font-size:12px}}
